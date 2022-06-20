@@ -1,0 +1,211 @@
+\documentclass[10pt,noamssymb,svgnames]{beamer}
+\usetheme{metropolis}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{ragged2e}
+\usepackage[vlined]{algorithm2e}
+\usepackage[absolute,overlay]{textpos}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric,arrows}
+
+\tikzset{onslide/.code args={<#1>#2}{%
+  \only<#1>{\pgfkeysalso{#2}} % \pgfkeysalso doesn't change the path
+}}
+\tikzset{temporal/.code args={<#1>#2#3#4}{%
+  \temporal<#1>{\pgfkeysalso{#2}}{\pgfkeysalso{#3}}{\pgfkeysalso{#4}} % \pgfkeysalso doesn't change the path
+}}
+
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,urlcolor=cyan,linkcolor=}
+
+\definecolor{CyanBlueAzure}{HTML}{4B8BBE} % light blue
+\definecolor{LapisLazuli}{HTML}{306998} % dark blue
+
+% BEAMER CONFIGURATION ---------------------------------------------------------
+\newcommand<>{\blue}[1]{{\color#2{blue}#1}}
+\setbeamerfont{block title}{size=\normalsize}
+\setbeamerfont{block body}{size=\scriptsize}
+\setbeamertemplate{mini frames}{}
+
+%\setbeamercolor{sectiontitle}{fg=black}
+\setbeamercolor{part title}{fg=black}
+\setbeamercolor{progress bar}{fg=CyanBlueAzure}
+\setbeamercolor{progress bar in head/foot}{fg=LapisLazuli,bg=CyanBlueAzure}
+\setbeamercolor{progress bar in section page}{fg=LapisLazuli,bg=CyanBlueAzure}
+\setbeamercolor{frametitle}{bg=black!75!white}
+
+% Configure progress bars
+\metroset{progressbar=frametitle}
+\makeatletter
+\setlength{\metropolis@progressonsectionpage@linewidth}{1pt}
+\setlength{\metropolis@progressinheadfoot@linewidth}{2pt}
+\makeatother
+
+% Blank footnote
+\newcommand\blfootnote[1]{%
+  \begingroup
+  \renewcommand\thefootnote{}\footnote{#1}%
+  \addtocounter{footnote}{-1}%
+  \endgroup
+}
+
+\bibliographystyle{ans}
+\setbeamertemplate{bibliography item}{\insertbiblabel}
+
+\newcommand{\highlight}[1]{%
+  \colorbox{yellow!20}{$\displaystyle#1$}}
+
+% TIKZ CONFIGURATION -----------------------------------------------------------
+\tikzstyle{start} = [rectangle, draw, fill=green!20, rounded corners=3mm,
+  centered, minimum height=1em]
+\tikzstyle{end} = [rectangle, draw, fill=red!20, rounded corners=3mm,
+  centered, minimum height=1em]
+\tikzstyle{process} = [rectangle, draw, fill=yellow!20, text width=8em, text
+  centered, minimum height=1em]
+\tikzstyle{decision} = [diamond, draw, fill=gray!20, text width=5em, text badly centered,
+  inner sep=0pt]
+\tikzstyle{line} = [draw, -latex', thick]
+
+%%---------------------------------------------------------------------------%%
+\title{Introduction to OpenMC}
+\author{Technical Meeting on the Development and Application of Open-Source \\ Modelling and Simulation Tools for Nuclear Reactors \\
+Milan, Italy \\
+June 20th, 2022}
+
+\date{}
+\titlegraphic{
+  \begin{picture}(0,0)
+    \put(325,-220){\makebox(0,0)[rt]{\includegraphics[height=0.75cm]{images/openmc_logo.png}}}
+  \end{picture}}
+
+%%---------------------------------------------------------------------------%%
+\begin{document}
+
+\maketitle
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Objectives}
+  The overarching objectives of the OpenMC project:
+  \begin{itemize}
+    \item Open source contribution model, freely available
+    \item Extensible for research purposes
+    \item Adopt best practices for software development
+    \item Ease of installation, minimize third-party dependencies
+    \item High performance, scalable on HPC resources
+    \item Use best physics models when possible
+    \item Fun to use with a thriving user and developer community!
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{OpenMC: Overview of features}
+  \begin{itemize}
+    \item \textbf{Modes}: Fixed source, $k$-eigenvalue calculations, stochastic
+    volume calculation, geometry plotting
+    \item \textbf{Geometry}: Constructive solid geometry, CAD-based,
+    unstructured mesh (tallies only)
+    \item \textbf{Solvers}: Neutron and photon transport, depletion
+    \item \textbf{Data}: Continuous energy or multigroup cross sections,
+    multipole for Doppler broadening
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{What makes OpenMC unique?}
+  \begin{itemize}
+    \item Programming interfaces (C/C++ and Python)
+    \item Nuclear data interfaces and representation
+    \item Tally abstractions
+    \item Parallel performance
+    \item Development workflow and governance
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Parallel Performance}
+  \begin{columns}
+    \column{0.35\textwidth}
+    \begin{center}
+      \includegraphics[width=1.7in]{images/mcperformance.pdf}
+    \end{center}
+    \footnotesize{
+      \begin{itemize}
+      \item ALCF Mira supercomputer
+      \item 49,152 nodes, 786,432 cores
+      \item 4 hw threads/core = 3,145,728 threads
+      \end{itemize}
+    }
+    \column{0.65\textwidth}
+    \includegraphics[width=3.0in]{images/scaling_loglog.pdf}
+  \end{columns}
+\end{frame}
+
+% \begin{frame}{Example: Advanced Test Reactor}
+%   \begin{center}
+%     \includegraphics[width=0.7\textwidth]{images/atr.png}
+%   \end{center}
+% \end{frame}
+
+\begin{frame}{Software Architecture}
+  \begin{itemize}
+  \item Mixed \textbf{C++} and \textbf{Python} codebase
+  \item \textbf{CMake} build system for portability
+  \item Distributed-memory parallelism via \textbf{MPI}
+  \item Shared-memory parallelism via \textbf{OpenMP}
+  \item Version control through \textbf{git}
+  \item Code hosting, bug tracking through \href{https://github.com/openmc-dev/openmc}{\textbf{GitHub}}
+  \item Regression/unit tests run on \textbf{GitHub Actions} CI platform
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Other Capabilities}
+  \begin{itemize}
+    \item Depletion
+    \item Multi-group cross sections
+    \item CAD-based geometry
+    \item Unstructured meshes
+    \item Python C-API
+  \end{itemize}
+\end{frame}
+
+% \begin{frame}{Current/upcoming developments}
+%   \begin{itemize}
+%     \item GPU porting (Exascale Computing Project)
+%     \item Multiphysics coupling
+%     \item Fusion shutdown dose rate (SDR) calculations
+%     \item Unstructured mesh support
+%     \item Methods to support molten salt reactor design
+%   \end{itemize}
+% \end{frame}
+
+\begin{frame}{Resources}
+  \begin{itemize}
+    \item \textbf{Code:} \url{https://github.com/openmc-dev/openmc}
+    \item \textbf{Docs:} \url{https://docs.openmc.org}
+    \item \textbf{Nuclear Data:} \url{https://openmc.org}
+    \item \textbf{Forum:} \url{https://openmc.discourse.group}
+    \item \textbf{Examples:} \url{https://github.com/openmc-dev/openmc-notebooks}
+  \end{itemize}
+\end{frame}
+
+\section{Workshop Logistics}
+
+\begin{frame}{Logistics}
+  \begin{itemize}
+    \item Instructors: Patrick Shriwise, Jon Shimwell, Ben Forget, and others
+    \item We will provide each of you with a unique URL that lets you connect to
+    a Jupyter Lab instance running on a cloud server with OpenMC preinstalled
+    \begin{itemize}
+      \item \textbf{URL}: https://oncore-\#.openmccourse.org
+      \item \textbf{Password}: openmc2022
+      \item \url{https://tinyurl.com/oncore-22-urls}
+    \end{itemize}
+    \item Due to time constraints we won't be covering Python basics today, but here is a link to a \href{https://perso.limsi.fr/pointal/_media/python:cours:mementopython3-english.pdf}{``cheat
+    sheet''}
+    \item Follow along and type the same commands as we go (or not!)
+    \item Feel free to ask questions on (either live or on the chat) at any point
+  \end{itemize}
+\end{frame}
+
+
+
+\end{document}
