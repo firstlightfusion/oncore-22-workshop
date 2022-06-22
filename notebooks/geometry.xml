@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='utf-8'?>
+<geometry>
+  <cell id="3" material="6" region="-3" universe="3" />
+  <cell id="4" material="7" region="3 -4" universe="3" />
+  <cell id="5" material="8" region="4" universe="3" />
+  <cell fill="4" id="6" region="9 -10 11 -12" universe="5" />
+  <lattice id="4">
+    <pitch>1.26 1.26</pitch>
+    <dimension>3 3</dimension>
+    <lower_left>-1.8900000000000001 -1.8900000000000001</lower_left>
+    <universes>
+3 3 3 
+3 3 3 
+3 3 3 </universes>
+  </lattice>
+  <surface coeffs="0.0 0.0 0.39" id="3" type="z-cylinder" />
+  <surface coeffs="0.0 0.0 0.46" id="4" type="z-cylinder" />
+  <surface boundary="reflective" coeffs="-1.8900000000000001" id="9" name="minimum x" type="x-plane" />
+  <surface boundary="reflective" coeffs="1.8900000000000001" id="10" name="maximum x" type="x-plane" />
+  <surface boundary="reflective" coeffs="-1.8900000000000001" id="11" name="minimum y" type="y-plane" />
+  <surface boundary="reflective" coeffs="1.8900000000000001" id="12" name="maximum y" type="y-plane" />
+</geometry>
